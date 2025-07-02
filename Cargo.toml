@@ -1,0 +1,3 @@
+[workspace]
+members = ["p1_usb_serial"]
+resolver = "3"
