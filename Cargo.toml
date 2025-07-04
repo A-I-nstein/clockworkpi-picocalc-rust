@@ -4,5 +4,6 @@ members = [
     "p2_spi_sdcard",
     "p3_spi_display",
     "p4_i2c_keyboard",
+    "p5_pwm_speakers",
 ]
 resolver = "3"

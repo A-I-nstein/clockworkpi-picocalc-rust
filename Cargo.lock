@@ -440,6 +440,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "p5_pwm_speakers"
+version = "0.1.0"
+dependencies = [
+ "embedded-hal 1.0.0",
+ "panic-halt",
+ "rp235x-hal",
+ "usb-device",
+ "usbd-serial",
+]
+
+[[package]]
 name = "panic-halt"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
