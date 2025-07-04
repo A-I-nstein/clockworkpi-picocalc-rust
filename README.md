@@ -47,11 +47,11 @@ For `picotool load` to succeed, the Pico 2W generally needs to be in **BOOTSEL m
 
 ## Components Explored
 - [X] USB Serial
-- [] SPI SD Card
-- [] SPI Display
+- [ ] SPI SD Card
+- [ ] SPI Display
 - [X] I2C Keyboard
 - [X] PWM Speakers
-- [] QSPI PSRAM
+- [ ] QSPI PSRAM
 
 ## License
 This project is licensed under the MIT License.
