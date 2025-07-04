@@ -27,7 +27,7 @@ For `picotool load` to succeed, the Pico 2W generally needs to be in **BOOTSEL m
 ## Prerequisites
 
 ### Hardware
-- The ClockworkPi PicoCalc - [clockworkpi.com](https://www.clockworkpi.com/picocalc)
+- The ClockworkPi PicoCalc - [clockworkpi.com](https://www.clockworkpi.com/picocalc), [Github](https://github.com/clockworkpi/PicoCalc)
 - The Raspberry Pi Pico 2 W - [Hardware Guide](https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html#pico2w-technical-specification)
 
 ### Software Installations
@@ -44,6 +44,12 @@ For `picotool load` to succeed, the Pico 2W generally needs to be in **BOOTSEL m
 - **`No accessible RP2350 devices in BOOTSEL mode were found.`**: Make sure you are holding the `BOOTSEL` button while plugging in the Pico 2W to explicitly enter bootloader mode.
 - **Compilation fails with "no such target"**: Double-check that you have added the `thumbv8m.main-none-eabihf` target using `rustup`.
 - **Unexpected behavior after flashing**: Try manually putting the Pico into BOOTSEL mode and flashing. If issues persist, a `picotool erase` before loading can sometimes resolve stubborn flash corruption issues (be aware this erases the entire flash memory).
+
+## Components Explored
+- [X] USB Serial
+- [] SPI SD Card
+- [] SPI Display
+- [X] I2C Keyboard
 
 ## License
 This project is licensed under the MIT License.

@@ -1,3 +1,8 @@
 [workspace]
-members = ["p1_usb_serial"]
+members = [
+    "p1_usb_serial",
+    "p2_spi_sdcard",
+    "p3_spi_display",
+    "p4_i2c_keyboard",
+]
 resolver = "3"

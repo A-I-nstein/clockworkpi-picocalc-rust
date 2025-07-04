@@ -1,0 +1,16 @@
+[package]
+name = "p2_spi_sdcard"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+embedded-hal = "1.0.0"
+embedded-hal-bus = "0.3.0"
+embedded-sdmmc = "0.9.0"
+panic-halt = "1.0.0"
+rp235x-hal = { version = "0.3.0", features = [
+    "critical-section-impl",
+    "defmt",
+] }
+usb-device = "0.3.2"
+usbd-serial = "0.2.2"
