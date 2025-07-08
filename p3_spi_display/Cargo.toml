@@ -7,9 +7,9 @@ edition = "2024"
 embedded-graphics = "0.8.1"
 embedded-hal = "1.0.0"
 embedded-hal-bus = "0.3.0"
-mipidsi = "0.9.0"
 panic-halt = "1.0.0"
 rp235x-hal = { version = "0.3.0", features = [
     "critical-section-impl",
     "defmt",
 ] }
+st7365p-lcd = { git = "https://github.com/LegitCamper/ST7365P-lcd-rs.git" }

@@ -338,18 +338,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c3c8dda44ff03a2f238717214da50f65d5a53b45cd213a7370424ffdb6fae815"
 
 [[package]]
-name = "mipidsi"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9ba34dcbf61182ffa6992b5a4d9b566d5a99df127fd93f6d314213347329e92f"
-dependencies = [
- "embedded-graphics-core",
- "embedded-hal 1.0.0",
- "heapless",
- "nb 1.1.0",
-]
-
-[[package]]
 name = "nb"
 version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -407,6 +395,7 @@ dependencies = [
 name = "p2_spi_sdcard"
 version = "0.1.0"
 dependencies = [
+ "critical-section",
  "embedded-hal 1.0.0",
  "embedded-hal-bus",
  "embedded-sdmmc",
@@ -423,9 +412,9 @@ dependencies = [
  "embedded-graphics",
  "embedded-hal 1.0.0",
  "embedded-hal-bus",
- "mipidsi",
  "panic-halt",
  "rp235x-hal",
+ "st7365p-lcd",
 ]
 
 [[package]]
@@ -660,6 +649,16 @@ name = "sha2-const-stable"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5f179d4e11094a893b82fff208f74d448a7512f99f5a0acbd5c679b705f83ed9"
+
+[[package]]
+name = "st7365p-lcd"
+version = "0.11.0"
+source = "git+https://github.com/LegitCamper/ST7365P-lcd-rs.git#6cfc2984c0f72b5c7e4fb5ec8afd0e36353a8bc0"
+dependencies = [
+ "embedded-graphics-core",
+ "embedded-hal 1.0.0",
+ "nb 1.1.0",
+]
 
 [[package]]
 name = "stable_deref_trait"

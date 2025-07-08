@@ -1,10 +1,9 @@
 #![no_std]
 #![no_main]
 
-use embedded_graphics::{draw_target::DrawTarget, pixelcolor::Rgb666, prelude::RgbColor};
-use embedded_hal::{digital::OutputPin, spi::MODE_0};
+use embedded_graphics::{draw_target::DrawTarget, pixelcolor::Rgb565, prelude::RgbColor};
+use embedded_hal::{delay::DelayNs, digital::OutputPin, spi::MODE_0};
 use embedded_hal_bus::spi::ExclusiveDevice;
-use mipidsi::{Builder, interface::SpiInterface, models::ILI9486Rgb666};
 use panic_halt as _;
 use rp235x_hal::{
     Clock, Sio, Spi, Timer, Watchdog,
@@ -14,6 +13,7 @@ use rp235x_hal::{
     gpio::{FunctionSpi, Pins},
     pac::Peripherals,
 };
+use st7365p_lcd::ST7365P;
 
 #[unsafe(link_section = ".start_block")]
 #[used]
@@ -58,26 +58,24 @@ fn main() -> ! {
     let spi = spi_bus.init(
         &mut peripherals.RESETS,
         clocks.peripheral_clock.freq(),
-        300.kHz(),
+        1000.kHz(),
         MODE_0,
     );
 
-    let mut buffer = [0_u8; 512];
     let dc = pins.gpio14.into_push_pull_output();
     let mut spi_cs = pins.gpio13.into_push_pull_output();
-    let mut rst = pins.gpio15.into_push_pull_output();
+    let rst = pins.gpio15.into_push_pull_output();
     spi_cs.set_high().unwrap();
-    rst.set_high().unwrap();
 
     let spi_device = ExclusiveDevice::new_no_delay(spi, spi_cs).unwrap();
-    let di = SpiInterface::new(spi_device, dc, &mut buffer);
 
-    let mut display = Builder::new(ILI9486Rgb666, di)
-        .reset_pin(rst)
-        .init(&mut timer)
-        .unwrap();
+    let mut display = ST7365P::new(spi_device, dc, Some(rst), false, true, 320, 320, timer);
+    display.init().unwrap();
 
-    display.clear(Rgb666::GREEN).unwrap();
-
-    loop {}
+    loop {
+        display.clear(Rgb565::WHITE).unwrap();
+        timer.delay_ms(1000);
+        display.clear(Rgb565::BLUE).unwrap();
+        timer.delay_ms(1000);
+    }
 }
