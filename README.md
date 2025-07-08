@@ -1,6 +1,6 @@
 # clockworkpi-picocalc-rust
 
-**Embedded Rust development for the ClockworkPi PicoCalc commercial product.** This repository houses drivers and applications specifically designed for the PicoCalc.
+**Embedded Rust development for the ClockworkPi PicoCalc commercial product.** This repository houses minimal starter code.
 
 ## Getting Started
 
