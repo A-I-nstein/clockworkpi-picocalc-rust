@@ -95,10 +95,12 @@ fn main() -> ! {
     let spi_miso = pins.gpio16.into_function::<FunctionSpi>();
     let spi = Spi::<_, _, _, 8>::new(peripherals.SPI0, (spi_mosi, spi_miso, spi_sck));
 
+    let mut read_speed = 1_000_000;
+
     let spi = spi.init(
         &mut peripherals.RESETS,
         clocks.peripheral_clock.freq(),
-        HertzU32::from_raw(400_000),
+        HertzU32::from_raw(read_speed),
         MODE_0,
     );
 
@@ -111,56 +113,49 @@ fn main() -> ! {
     let volume_mgr = VolumeManager::new(sd_card, DummyTimesource::default());
 
     let mut last_send_time_us = timer.get_counter().ticks();
-    let read_speed = 5000;
     let idx = 0;
 
     loop {
         let current_time_us = timer.get_counter().ticks();
 
         if current_time_us - last_send_time_us >= 5_000_000 {
+            critical_section::with(|cs| {
+                spi_mutex.borrow_ref_mut(cs).set_baudrate(
+                    clocks.peripheral_clock.freq(),
+                    HertzU32::from_raw(read_speed),
+                )
+            })
+            .raw();
+            write!(serial, "Card Read Speed: {}Hz\r\n", read_speed).unwrap();
+
             volume_mgr.device(|device| match device.num_bytes() {
                 Ok(size) => {
-                    let mut buffer = [0u8; 64];
-                    let mut writer = buffer.as_mut_slice();
-                    write!(writer, "Card Size: {size:?}\r\n").unwrap();
-                    serial.write(&buffer[0..]).unwrap();
+                    write!(serial, "Card Size: {} bytes\r\n", size).unwrap();
                     DummyTimesource::default()
                 }
                 Err(e) => {
-                    let mut buffer = [0u8; 64];
-                    let mut writer = buffer.as_mut_slice();
-                    write!(writer, "Could not read card: {e:?}\r\n").unwrap();
-                    serial.write(&buffer[0..]).unwrap();
+                    write!(serial, "Could not read card: {:?}\r\n", e).unwrap();
                     DummyTimesource::default()
                 }
             });
 
-            critical_section::with(|cs| {
-                spi_mutex.borrow_ref_mut(cs).set_baudrate(
-                    clocks.peripheral_clock.freq(),
-                    HertzU32::from_raw(16_000_000),
-                )
-            })
-            .raw();
-
-            let mut buffer = [0u8; 64];
-            let mut writer = buffer.as_mut_slice();
-            write!(writer, "Card Read Speed: {read_speed:?}kHz\r\n").unwrap();
-            serial.write(&buffer[0..]).unwrap();
-
             match volume_mgr.open_volume(VolumeIdx(idx)) {
-                Ok(_volume0) => {
+                Ok(volume0) => {
                     serial.write("Volume Open\r\n".as_bytes()).unwrap();
+                    let root_dir = volume0.open_root_dir().unwrap();
+                    root_dir
+                        .iterate_dir(|entry| {
+                            write!(serial, "{:?}\r\n", entry.name).unwrap();
+                        })
+                        .unwrap();
                 }
                 Err(e) => {
-                    let mut buffer = [0u8; 64];
-                    let mut writer = buffer.as_mut_slice();
-                    write!(writer, "Could not open volume {idx}: {e:?}\r\n").unwrap();
-                    serial.write(&buffer[0..]).unwrap();
+                    write!(serial, "Could not open volume {}: {:?}\r\n", idx, e).unwrap();
                 }
             }
 
             last_send_time_us = current_time_us;
+            read_speed += 100_000;
         }
 
         usb_dev.poll(&mut [&mut serial]);
