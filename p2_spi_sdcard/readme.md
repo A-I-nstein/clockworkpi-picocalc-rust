@@ -5,3 +5,7 @@ This program demonstrates how to interface with an SD card using the SPI protoco
 The code configures the SPI0 peripheral on GPIO pins 16 (MISO), 17 (CS), 18 (SCK), and 19 (MOSI). It also sets up a USB serial device to communicate with a host computer.
 
 The main loop of the program periodically attempts to interact with the SD card. Every five seconds, it reports the card's size and lists the contents of the root directory of the first partition, sending this information over the USB serial port. After each attempt, it incrementally increases the SPI bus speed by 100 kHz to test the card's read performance at different frequencies.
+
+## Note
+
+A micro SD card with an SD card adapter was used because the program was incompatible with the SD card included in the PicoCalc kit. This issue may be a limitation of the `embedded-sdmmc` crate, as most users of this crate have successfully implemented it with micro SD cards.
